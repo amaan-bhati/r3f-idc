@@ -43,6 +43,7 @@ interface BandProps {
   cardImage?: string;
   personName?: string;
   personTitle?: string;
+  githubUsername?: string;
 }
 
 export default function Band({ 
@@ -50,7 +51,8 @@ export default function Band({
   minSpeed = 10,
   cardImage = "/assets/images/my-img-0.webp",
   personName = "Amaan Bhati",
-  personTitle = "Keploy API Fellow"
+  personTitle = "Keploy API Fellow",
+  githubUsername = "amaanbhati"
 }: BandProps) {
   const band = useRef<THREE.Mesh<MeshLineGeometry, MeshLineMaterial>>(null);
   const fixed = useRef<RapierRigidBody>(null);
@@ -156,34 +158,155 @@ export default function Band({
   curve.curveType = "chordal";
   bandTexture.wrapS = bandTexture.wrapT = THREE.RepeatWrapping;
 
-  // Canvas texture for dynamic text on the card
-  const [nameCanvas] = useState(() => {
+  // Create circular mask for profile image
+  const [circularMask] = useState(() => {
     const canvas = document.createElement('canvas');
     canvas.width = 512;
-    canvas.height = 128;
+    canvas.height = 512;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.fillStyle = 'black';
+      ctx.fillRect(0, 0, 512, 512);
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(256, 256, 240, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    return new THREE.CanvasTexture(canvas);
+  });
+
+  // Create circular image with border
+  const [circularImageCanvas] = useState(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 512;
     return canvas;
   });
 
-  // Update canvas with name and title
+  // Update circular image with border when profile texture is loaded
   useEffect(() => {
-    const context = nameCanvas.getContext('2d');
-    if (context) {
-      context.clearRect(0, 0, nameCanvas.width, nameCanvas.height);
-      context.fillStyle = 'white';
-      context.font = 'bold 36px Arial';
-      context.fillText(personName, 10, 50);
-      context.font = '24px Arial';
-      context.fillText(personTitle, 10, 90);
+    const updateCircularImage = () => {
+      const ctx = circularImageCanvas.getContext('2d');
+      if (!ctx) return;
+      
+      ctx.clearRect(0, 0, 512, 512);
+      
+      // Create circular clipping path
+      ctx.beginPath();
+      ctx.arc(256, 256, 230, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.clip();
+      
+      // Draw the profile image inside the circle
+      ctx.drawImage(profileTexture.image, 0, 0, 512, 512);
+      
+      // Reset clip for border
+      ctx.restore();
+      ctx.save();
+      
+      // Draw gradient border
+      const borderGradient = ctx.createLinearGradient(0, 0, 512, 512);
+      borderGradient.addColorStop(0, '#FF8C00');
+      borderGradient.addColorStop(0.5, '#FFA500');
+      borderGradient.addColorStop(1, '#FF4500');
+      
+      ctx.lineWidth = 15;
+      ctx.strokeStyle = borderGradient;
+      ctx.beginPath();
+      ctx.arc(256, 256, 230, 0, Math.PI * 2);
+      ctx.stroke();
+    };
+    
+    if (profileTexture.image) {
+      updateCircularImage();
+    } else {
+      profileTexture.addEventListener('update', updateCircularImage);
+      return () => {
+        profileTexture.removeEventListener('update', updateCircularImage);
+      };
     }
-  }, [personName, personTitle, nameCanvas]);
+  }, [profileTexture, circularImageCanvas]);
 
-  // Create texture from canvas
-  const [nameTexture] = useState(() => new THREE.CanvasTexture(nameCanvas));
+  // Create texture from circular image canvas
+  const [circularImageTexture] = useState(() => new THREE.CanvasTexture(circularImageCanvas));
   
   // Update texture when canvas changes
   useEffect(() => {
-    nameTexture.needsUpdate = true;
-  }, [personName, personTitle, nameTexture]);
+    circularImageTexture.needsUpdate = true;
+  }, [circularImageTexture, profileTexture]);
+
+  // Canvas texture for dynamic text on the card
+  const [cardCanvas] = useState(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 512;
+    return canvas;
+  });
+
+  // Update canvas with text content
+  useEffect(() => {
+    const context = cardCanvas.getContext('2d');
+    if (context) {
+      context.clearRect(0, 0, cardCanvas.width, cardCanvas.height);
+      
+      // Fellowship heading gradient (orange to red)
+      const titleGradient = context.createLinearGradient(50, 0, 462, 0);
+      titleGradient.addColorStop(0, '#FF8C00');    // Dark Orange
+      titleGradient.addColorStop(0.5, '#FFA500');  // Orange
+      titleGradient.addColorStop(1, '#FF4500');    // Orange Red
+      
+      // Fellowship heading with modern font
+      context.fillStyle = titleGradient;
+      context.font = 'bold 28px "Segoe UI", Arial, sans-serif';
+      context.textAlign = 'center';
+      context.fillText('KEPLOY API FELLOWSHIP', 256, 100);
+      
+      // Name gradient (different orange palette)
+      const nameGradient = context.createLinearGradient(100, 360, 400, 360);
+      nameGradient.addColorStop(0, '#FF8036');    // Coral Orange
+      nameGradient.addColorStop(0.5, '#FFAA33');  // Amber
+      nameGradient.addColorStop(1, '#FF6E1F');    // Deep Orange
+      
+      // Person name with gradient and more attractive font
+      context.fillStyle = nameGradient;
+      context.font = 'bold 42px "Trebuchet MS", Helvetica, sans-serif';
+      context.fillText(personName, 256, 360);
+      
+      // Add subtle shadow effect to name text
+      context.shadowColor = 'rgba(0, 0, 0, 0.3)';
+      context.shadowBlur = 4;
+      context.shadowOffsetX = 2;
+      context.shadowOffsetY = 2;
+      context.fillText(personName, 256, 360);
+      
+      // Reset shadow for other text
+      context.shadowColor = 'transparent';
+      context.shadowBlur = 0;
+      context.shadowOffsetX = 0;
+      context.shadowOffsetY = 0;
+      
+      // GitHub username with modern font
+      context.fillStyle = '#E0E0E0';  // Light gray
+      context.font = '24px "Roboto", Arial, sans-serif';
+      context.fillText(`@${githubUsername}`, 256, 400);
+      
+      // Fellow title and cohort with improved typography
+      context.fillStyle = 'white';
+      context.font = 'bold 26px "Segoe UI", Arial, sans-serif';
+      context.fillText('Keploy API Fellow', 256, 440);
+      
+      context.font = '22px "Segoe UI", Arial, sans-serif';
+      context.fillText('Cohort 2025', 256, 470);
+    }
+  }, [personName, personTitle, githubUsername, cardCanvas]);
+
+  // Create texture from canvas
+  const [cardTextTexture] = useState(() => new THREE.CanvasTexture(cardCanvas));
+  
+  // Update texture when canvas changes
+  useEffect(() => {
+    cardTextTexture.needsUpdate = true;
+  }, [personName, personTitle, githubUsername, cardTextTexture]);
 
   return (
     <>
@@ -240,21 +363,23 @@ export default function Band({
                 />
               </mesh>
               
-              {/* Photo Area */}
-              <mesh position={[0, 0.4, 0.03]}>
-                <planeGeometry args={[1.2, 1.2]} />
+              {/* Photo Area - Circular with gradient border */}
+              <mesh position={[0, 0.15, 0.031]}>
+                <planeGeometry args={[0.9, 0.9]} />
                 <meshBasicMaterial 
-                  map={profileTexture} 
+                  map={circularImageTexture}
                   transparent
+                  alphaTest={0.1}
                 />
               </mesh>
               
-              {/* Name/Title Area */}
-              <mesh position={[0, -0.7, 0.03]}>
-                <planeGeometry args={[1.4, 0.6]} />
+              {/* Text Content Area - covering the entire card for better layout */}
+              <mesh position={[0, 0, 0.03]}>
+                <planeGeometry args={[1.5, 2.2]} />
                 <meshBasicMaterial 
-                  map={nameTexture} 
+                  map={cardTextTexture} 
                   transparent
+                  alphaTest={0.1}
                 />
               </mesh>
               
@@ -286,4 +411,3 @@ export default function Band({
     </>
   );
 }
-

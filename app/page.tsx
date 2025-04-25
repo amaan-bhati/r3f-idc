@@ -9,6 +9,7 @@ import {
 import { Physics } from "@react-three/rapier";
 import { MeshLineGeometry, MeshLineMaterial } from "meshline";
 import Band from "@/components/band";
+import Hero from "@/components/hero";
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 useGLTF.preload("/assets/3d/card.glb");
@@ -16,8 +17,14 @@ useTexture.preload("/assets/images/tag_texture.png");
 
 export default function Register() {
   return (
-    <div className="relative h-screen w-full">
-      <div className="flex h-screen w-full ">
+    <div className="relative w-full">
+      {/* Hero section taking full width */}
+      <div className="w-full">
+        <Hero />
+      </div>
+      
+      {/* Band section taking full width */}
+      <div className="w-full h-screen">
         <Canvas
           camera={{ position: [0, 0, 13], fov: 25 }}
           style={{ backgroundColor: "transparent" }}
@@ -32,6 +39,7 @@ export default function Register() {
             <Band />
           </Physics>
           <Environment background blur={3.75}>
+            {/* Lightformers remain unchanged */}
             <Lightformer
               intensity={2}
               color="white"
