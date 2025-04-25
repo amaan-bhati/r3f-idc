@@ -19,9 +19,7 @@ export default function Register() {
   return (
     <div className="relative w-full">
       {/* Hero section taking full width */}
-      <div className="w-full">
-        <Hero />
-      </div>
+     
       
       {/* Band section taking full width */}
       <div className="w-full h-screen">
@@ -70,6 +68,9 @@ export default function Register() {
             />
           </Environment>
         </Canvas>
+      </div>
+      <div className="w-full">
+        <Hero />
       </div>
     </div>
   );
