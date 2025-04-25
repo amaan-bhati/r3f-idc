@@ -5,8 +5,8 @@ import "@/styles/globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Interactive 3D Event Badge",
-  description: "An interactive 3D event badge",
+  title: "Fellowship onboarding platform",
+  description: "Interactive onboarding website with a 3d card",
 };
 
 export default function RootLayout({

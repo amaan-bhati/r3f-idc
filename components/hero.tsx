@@ -188,7 +188,7 @@ export default function Hero() {
       </div>
       <form
         onSubmit={(e) => e.preventDefault()}
-        className="bg-white border border-orange-100 p-8 rounded-xl shadow-lg w-full max-w-[50%] space-y-6 relative overflow-hidden"
+        className="bg-white border border-orange-100 p-8 rounded-xl shadow-lg space-y-6 relative overflow-hidden"
       >
         <div className="absolute inset-0 bg-gradient-to-br from-orange-100/50 to-orange-50/50"></div>
         <div className="relative">
