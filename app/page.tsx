@@ -10,16 +10,30 @@ import { Physics } from "@react-three/rapier";
 import { MeshLineGeometry, MeshLineMaterial } from "meshline";
 import Band from "@/components/band";
 import Hero from "@/components/hero";
+import { useState } from "react";
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 useGLTF.preload("/assets/3d/card.glb");
 useTexture.preload("/assets/images/tag_texture.png");
 
 export default function Register() {
+  const [userData, setUserData] = useState({
+    name: ' ',
+    github: ' ',
+    email: ' ',
+    image: '/assets/images/default-profile.jpg',
+    generated: false
+  });
+
   return (
     <div className="relative w-full">
       {/* Hero section taking full width */}
-     
+      <div className="w-full">
+      <Hero 
+          onDataUpdate={(newData) => setUserData(prev => ({...prev, ...newData}))} 
+          userData={userData}
+        />
+      </div>
       
       {/* Band section taking full width */}
       <div className="w-full h-screen">
@@ -34,7 +48,7 @@ export default function Register() {
             gravity={[0, -40, 0]}
             timeStep={1 / 60}
           >
-            <Band />
+            <Band userData={userData} />
           </Physics>
           <Environment background blur={3.75}>
             {/* Lightformers remain unchanged */}
@@ -68,9 +82,6 @@ export default function Register() {
             />
           </Environment>
         </Canvas>
-      </div>
-      <div className="w-full">
-        <Hero />
       </div>
     </div>
   );

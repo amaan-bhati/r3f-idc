@@ -14,12 +14,21 @@ const loadingStates = [
   },
 ];
 
-export default function Hero() {
-  const [name, setName] = useState('');
-  const [github, setGithub] = useState('');
-  const [email, setEmail] = useState('');
-  const [image, setImage] = useState('');
-  const [generated, setGenerated] = useState(false);
+interface UserData {
+    name: string;
+    github: string;
+    email: string;
+    image: string;
+    generated: boolean;
+  }
+  
+  interface HeroProps {
+    onDataUpdate: (newData: Partial<UserData>) => void;
+    userData: UserData;
+  }
+
+export default function Hero({ onDataUpdate, userData }: HeroProps) {
+  const { name, github, email, image, generated } = userData;
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -28,7 +37,7 @@ export default function Hero() {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = () => setImage(reader.result as string);
+      reader.onload = () => onDataUpdate({ image: reader.result as string });
       reader.readAsDataURL(file);
     }
   };
@@ -74,6 +83,7 @@ export default function Hero() {
       alert('Please fill all fields and upload a picture.');
       return;
     }
+    
     try {
       setIsLoading(true);
       setError(null);
@@ -84,7 +94,7 @@ export default function Hero() {
         return;
       }
       // If we got here, the user has starred the repo
-      setGenerated(true);
+      onDataUpdate({ generated: true });
     } catch (error) {
       console.error("Error during generation:", error);
       setError("There was an error processing your request. Please try again later or contact devrel@keploy.io");
@@ -199,7 +209,7 @@ export default function Hero() {
               placeholder="Enter Your Name"
               className="w-full p-3 rounded-lg bg-white border border-orange-200 text-gray-800 focus:ring-2 focus:ring-orange-400 focus:border-transparent transition"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => onDataUpdate({ name: e.target.value })}
             />
           </div>
           <div className="mb-6">
@@ -210,8 +220,7 @@ export default function Hero() {
               className="w-full p-3 rounded-lg bg-white border border-orange-200 text-gray-800 focus:ring-2 focus:ring-orange-400 focus:border-transparent transition"
               value={github}
               onChange={(e) => {
-                setGithub(e.target.value);
-                // Clear any previous errors when the username changes
+                onDataUpdate({github:e.target.value})
                 if (error) setError(null);
               }}
             />
@@ -223,7 +232,7 @@ export default function Hero() {
               placeholder="name@example.com"
               className="w-full p-3 rounded-lg bg-white border border-orange-200 text-gray-800 focus:ring-2 focus:ring-orange-400 focus:border-transparent transition"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => onDataUpdate({email:e.target.value})}
             />
           </div>
           <div className="mb-8">

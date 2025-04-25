@@ -37,7 +37,7 @@ const segmentProps = {
   linearDamping: 2,
 } as const;
 
-interface BandProps {
+interface BandProps1 {
   maxSpeed?: number;
   minSpeed?: number;
   cardImage?: string;
@@ -46,14 +46,17 @@ interface BandProps {
   githubUsername?: string;
 }
 
-export default function Band({ 
-  maxSpeed = 50, 
-  minSpeed = 10,
-  cardImage = "/assets/images/my-img-0.webp",
-  personName = "Amaan Bhati",
-  personTitle = "Keploy API Fellow",
-  githubUsername = "amaanbhati"
-}: BandProps) {
+interface BandProps {
+  userData: {
+    name: string;
+    github: string;
+    email: string;
+    image: string;
+    generated: boolean;
+  };
+}
+
+export default function BandBand({ userData }: BandProps) {
   const band = useRef<THREE.Mesh<MeshLineGeometry, MeshLineMaterial>>(null);
   const fixed = useRef<RapierRigidBody>(null);
   const j1 = useRef<RapierRigidBody>(null);
@@ -65,12 +68,15 @@ export default function Band({
   const ang = new THREE.Vector3();
   const rot = new THREE.Vector3();
   const dir = new THREE.Vector3();
+  const minSpeed = 50
+  const maxSpeed = 140
+  const personTitle = "Keploy API Fellowship"
   const [dragged, drag] = useState<THREE.Vector3 | false>(false);
   const [hovered, hover] = useState(false);
 
   // Load textures for the custom card
   const bandTexture = useTexture("/assets/images/tag_texture.png");
-  const profileTexture = useTexture(cardImage);
+  const profileTexture = useTexture(userData.image);
   const cardBackgroundTexture = useTexture("/assets/images/card-background.jpg");
 
   const [curve] = useState(
@@ -270,14 +276,14 @@ export default function Band({
       // Person name with gradient and more attractive font
       context.fillStyle = nameGradient;
       context.font = 'bold 42px "Trebuchet MS", Helvetica, sans-serif';
-      context.fillText(personName, 256, 360);
+      context.fillText(userData.name, 256, 360);
       
       // Add subtle shadow effect to name text
       context.shadowColor = 'rgba(0, 0, 0, 0.3)';
       context.shadowBlur = 4;
       context.shadowOffsetX = 2;
       context.shadowOffsetY = 2;
-      context.fillText(personName, 256, 360);
+      context.fillText(userData.name, 256, 360);
       
       // Reset shadow for other text
       context.shadowColor = 'transparent';
@@ -288,7 +294,7 @@ export default function Band({
       // GitHub username with modern font
       context.fillStyle = '#E0E0E0';  // Light gray
       context.font = '24px "Roboto", Arial, sans-serif';
-      context.fillText(`@${githubUsername}`, 256, 400);
+      context.fillText(`@${userData.github}`, 256, 400);
       
       // Fellow title and cohort with improved typography
       context.fillStyle = 'white';
@@ -298,7 +304,7 @@ export default function Band({
       context.font = '22px "Segoe UI", Arial, sans-serif';
       context.fillText('Cohort 2025', 256, 470);
     }
-  }, [personName, personTitle, githubUsername, cardCanvas]);
+  }, [userData.name, personTitle, userData.github, cardCanvas]);
 
   // Create texture from canvas
   const [cardTextTexture] = useState(() => new THREE.CanvasTexture(cardCanvas));
@@ -306,7 +312,7 @@ export default function Band({
   // Update texture when canvas changes
   useEffect(() => {
     cardTextTexture.needsUpdate = true;
-  }, [personName, personTitle, githubUsername, cardTextTexture]);
+  }, [userData.name, personTitle, userData.github, cardTextTexture]);
 
   return (
     <>
