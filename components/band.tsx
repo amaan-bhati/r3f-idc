@@ -77,7 +77,8 @@ export default function BandBand({ userData }: BandProps) {
   // Load textures for the custom card
   const bandTexture = useTexture("/assets/images/tag_texture.png");
   const profileTexture = useTexture(userData.image);
-  const cardBackgroundTexture = useTexture("/assets/images/card-background.jpg");
+  const cardBackgroundTexture = useTexture("/assets/images/card-background.png");
+  const keployLogoTexture = useTexture("/assets/images/keploy-logo.png");
 
   const [curve] = useState(
     () =>
@@ -211,15 +212,31 @@ export default function BandBand({ userData }: BandProps) {
       ctx.save();
       
       // Draw gradient border
-      const borderGradient = ctx.createLinearGradient(0, 0, 512, 512);
-      borderGradient.addColorStop(0, '#FF8C00');
-      borderGradient.addColorStop(0.5, '#FFA500');
-      borderGradient.addColorStop(1, '#FF4500');
-      
-      ctx.lineWidth = 15;
-      ctx.strokeStyle = borderGradient;
-      ctx.beginPath();
-      ctx.arc(256, 256, 230, 0, Math.PI * 2);
+   // Draw partial orange borders (only at certain angles)
+
+  //  const orangeColor = '#FF6E1F';
+
+  //  ctx.lineWidth = 12;
+
+  //  ctx.strokeStyle = orangeColor;
+
+   
+
+  //  // Top-right arc segment
+
+  //  ctx.beginPath();
+
+  //  ctx.arc(256, 256, 230, -0.6, 0.8, false);
+
+  //  ctx.stroke();
+
+   
+
+   // Bottom-left arc segment
+
+   ctx.beginPath();
+
+   ctx.arc(256, 256, 230, Math.PI + 0.4, Math.PI + 1.8, false);
       ctx.stroke();
     };
     
@@ -291,18 +308,18 @@ export default function BandBand({ userData }: BandProps) {
       context.shadowOffsetX = 0;
       context.shadowOffsetY = 0;
       
-      // GitHub username with modern font
+      // GitHub username, font for the same can be changed here as well
       context.fillStyle = '#E0E0E0';  // Light gray
       context.font = '24px "Roboto", Arial, sans-serif';
       context.fillText(`@${userData.github}`, 256, 400);
       
-      // Fellow title and cohort with improved typography
+      // Fellow title, font and style can be changed here
       context.fillStyle = 'white';
       context.font = 'bold 26px "Segoe UI", Arial, sans-serif';
-      context.fillText('Keploy API Fellow', 256, 440);
+      context.fillText('API Fellow Cohort 2025', 256, 440);
       
-      context.font = '22px "Segoe UI", Arial, sans-serif';
-      context.fillText('Cohort 2025', 256, 470);
+      // context.font = '22px "Segoe UI", Arial, sans-serif';
+      // context.fillText('', 256, 470);
     }
   }, [userData.name, personTitle, userData.github, cardCanvas]);
 

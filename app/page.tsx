@@ -21,7 +21,7 @@ export default function Register() {
     name: ' ',
     github: ' ',
     email: ' ',
-    image: '/assets/images/default-profile.jpg',
+    image: '/assets/images/default-profile.png',
     generated: false
   });
 

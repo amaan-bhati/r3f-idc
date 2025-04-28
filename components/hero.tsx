@@ -284,7 +284,7 @@ export default function Hero({ onDataUpdate, userData }: HeroProps) {
             disabled={isLoading}
             className={`w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium py-3 px-4 rounded-lg transition shadow-md hover:shadow-orange-300 ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
           >
-            {isLoading ? 'Checking Star Status...' : 'Generate ID Card'}
+            {isLoading ? 'Checking Star and Register Status...' : 'Generate ID Card'}
           </button>
           <div className="mt-4 text-sm text-gray-600 text-center">
             <p>⭐ You must star the <a href="https://github.com/keploy/keploy" target="_blank" rel="noopener noreferrer" className="text-orange-600 hover:underline">Keploy repository</a> to generate your ID card</p>
@@ -300,7 +300,7 @@ export default function Hero({ onDataUpdate, userData }: HeroProps) {
                 Keploy API Fellowship
               </h2>
               <div className="border-4 border-orange-500/30 rounded-full p-1 shadow-lg shadow-orange-500/20">
-                {/* Replaced img with Next.js Image */}
+
                 <div className="relative rounded-full w-32 h-32 overflow-hidden">
                   <NextImage
                     src={image}

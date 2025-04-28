@@ -69,7 +69,7 @@ export default function Band({
   // Load textures for the custom card
   const bandTexture = useTexture("/assets/images/tag_texture.png");
   const profileTexture = useTexture(cardImage);
-  const cardBackgroundTexture = useTexture("/assets/images/card-background.jpg");
+  const cardBackgroundTexture = useTexture("/assets/images/card-background.png");
 
   const [curve] = useState(
     () =>
