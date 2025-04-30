@@ -108,83 +108,89 @@ export default function Hero({ onDataUpdate, userData }: HeroProps) {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+    
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // Background gradient
-    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    gradient.addColorStop(0, '#111111');
-    gradient.addColorStop(1, '#201206');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    // Add decorative elements
-    ctx.fillStyle = 'rgba(255, 136, 0, 0.05)';
-    ctx.beginPath();
-    ctx.arc(50, 50, 100, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(canvas.width - 50, canvas.height - 50, 120, 0, Math.PI * 2);
-    ctx.fill();
-    // Heading
-    const orangeGradient = ctx.createLinearGradient(20, 40, 280, 40);
-    orangeGradient.addColorStop(0, '#ff8800');
-    orangeGradient.addColorStop(1, '#ff5500');
-    ctx.fillStyle = orangeGradient;
-    ctx.font = 'bold 24px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Keploy API Fellowship', canvas.width / 2, 50);
     
-    // Use the global browser's Image constructor instead of Next.js Image
-    const img = new window.Image();
-    img.src = image;
-    img.onload = () => {
-      const x = canvas.width / 2;
-      const y = 140;
-      const radius = 80;
-      // Shadow
-      ctx.shadowColor = 'rgba(255, 136, 0, 0.6)';
-      ctx.shadowBlur = 15;
-      // Circle clip and image
-      ctx.save();
+    // Load background image first
+    const bgImg = new window.Image();
+    bgImg.src = '/assets/images/card-background.png';
+    
+    bgImg.onload = () => {
+      // Draw background image to fill canvas
+      ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+      
+      // Add decorative elements (optional, might not be needed with the background image)
+      ctx.fillStyle = 'rgba(255, 136, 0, 0.05)';
       ctx.beginPath();
-      ctx.arc(x, y, radius, 0, Math.PI * 2, true);
-      ctx.closePath();
-      ctx.clip();
-      ctx.drawImage(img, x - radius, y - radius, radius * 2, radius * 2);
-      ctx.restore();
-      // Reset shadow
-      ctx.shadowBlur = 0;
-      // Circle border
-      ctx.strokeStyle = '#ff8800';
-      ctx.lineWidth = 3;
+      ctx.arc(50, 50, 100, 0, Math.PI * 2);
+      ctx.fill();
       ctx.beginPath();
-      ctx.arc(x, y, radius, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.fillStyle = 'white';
-      ctx.font = 'bold 26px sans-serif';
+      ctx.arc(canvas.width - 50, canvas.height - 50, 120, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Heading
+      const orangeGradient = ctx.createLinearGradient(20, 40, 280, 40);
+      orangeGradient.addColorStop(0, '#ff8800');
+      orangeGradient.addColorStop(1, '#ff5500');
+      ctx.fillStyle = orangeGradient;
+      ctx.font = 'bold 24px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(name, x, 260);
-      // GitHub username
-      ctx.fillStyle = '#ff8800';
-      ctx.font = '16px sans-serif';
-      ctx.fillText(`@${github}`, x, 290);
-      // Cohort text
-      ctx.fillStyle = '#999999';
-      ctx.font = 'italic 14px sans-serif';
-      ctx.fillText('Cohort 2025 API Fellow', x, 320);
-      ctx.strokeStyle = 'rgba(255, 136, 0, 0.3)';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(50, 370);
-      ctx.lineTo(canvas.width - 50, 370);
-      ctx.stroke();
-      ctx.fillStyle = '#777777';
-      ctx.font = '12px sans-serif';
-      ctx.fillText('Keploy.io', x, 400);
-      // Download
-      const link = document.createElement('a');
-      link.download = `${name.replace(/\s/g, '_')}_keploy_id.png`;
-      link.href = canvas.toDataURL();
-      link.click();
+      ctx.fillText('Keploy API Fellowship', canvas.width / 2, 50);
+      
+      // Use the global browser's Image constructor instead of Next.js Image
+      const img = new window.Image();
+      img.src = image;
+      img.onload = () => {
+        const x = canvas.width / 2;
+        const y = 140;
+        const radius = 80;
+        // Shadow
+        ctx.shadowColor = 'rgba(255, 136, 0, 0.6)';
+        ctx.shadowBlur = 15;
+        // Circle clip and image
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.clip();
+        ctx.drawImage(img, x - radius, y - radius, radius * 2, radius * 2);
+        ctx.restore();
+        // Reset shadow
+        ctx.shadowBlur = 0;
+        // Circle border
+        ctx.strokeStyle = '#ff8800';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 26px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(name, x, 260);
+        // GitHub username
+        ctx.fillStyle = '#ff8800';
+        ctx.font = '16px sans-serif';
+        ctx.fillText(`@${github}`, x, 290);
+        // Cohort text
+        ctx.fillStyle = '#999999';
+        ctx.font = 'italic 14px sans-serif';
+        ctx.fillText('Cohort 2025 API Fellow', x, 320);
+        ctx.strokeStyle = 'rgba(255, 136, 0, 0.3)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(50, 370);
+        ctx.lineTo(canvas.width - 50, 370);
+        ctx.stroke();
+        ctx.fillStyle = '#777777';
+        ctx.font = '12px sans-serif';
+        ctx.fillText('Keploy.io', x, 400);
+        // Download
+        const link = document.createElement('a');
+        link.download = `${name.replace(/\s/g, '_')}_keploy_id.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+      };
     };
   };
 
@@ -293,37 +299,50 @@ export default function Hero({ onDataUpdate, userData }: HeroProps) {
       </form>
       {generated && (
         <div className="mt-6 flex flex-col items-center space-y-6">
-          <div className="relative bg-gradient-to-b from-gray-900 to-gray-950 border border-gray-800 p-6 rounded-xl shadow-xl w-80 flex flex-col items-center">
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-amber-500/5 rounded-xl"></div>
-            <div className="relative z-10 flex flex-col items-center space-y-4 w-full">
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
-                Keploy API Fellowship
-              </h2>
-              <div className="border-4 border-orange-500/30 rounded-full p-1 shadow-lg shadow-orange-500/20">
-
-                <div className="relative rounded-full w-32 h-32 overflow-hidden">
-                  <NextImage
-                    src={image}
-                    alt="user"
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    sizes="128px"
-                  />
-                </div>
-              </div>
-              <div className="text-xl font-bold text-white">{name}</div>
-              <div className="text-orange-500 font-medium">@{github}</div>
-              <div className="text-sm text-gray-400 italic">Cohort 2025 API Fellow</div>
-              <div className="w-full h-px bg-gradient-to-r from-transparent via-orange-500/30 to-transparent my-2"></div>
-              <div className="text-xs text-gray-500">Keploy.io</div>
-            </div>
+        <div className="relative p-6 rounded-xl shadow-xl w-80 flex flex-col items-center overflow-hidden">
+          {/* Background image */}
+          <div className="absolute inset-0">
+            <NextImage 
+              src="/assets/images/card-background.png" 
+              alt="Card background"
+              fill
+              style={{ objectFit: 'cover' }}
+              priority
+            />
           </div>
-          <button
-            onClick={handleDownload}
-            className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium px-6 py-3 rounded-lg transition flex items-center space-x-2 shadow-md hover:shadow-orange-300"
-          >
-            <span>Download ID Card</span>
-          </button>
+          
+          {/* Optional overlay to ensure text remains legible */}
+          {/* <div className="absolute inset-0 bg-black/30"></div> */}
+          
+          <div className="relative z-10 flex flex-col items-center space-y-4 w-full">
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
+              Keploy API Fellowship
+            </h2>
+            <div className="border-4 border-orange-500/30 rounded-full p-1 shadow-lg shadow-orange-500/20">
+              <div className="relative rounded-full w-32 h-32 overflow-hidden">
+                <NextImage
+                  src={image}
+                  alt="user"
+                  fill
+                  style={{ objectFit: 'cover' }}
+                  sizes="128px"
+                />
+              </div>
+            </div>
+            <div className="text-xl font-bold text-white">{name}</div>
+            <div className="text-orange-500 font-medium">@{github}</div>
+            <div className="text-sm text-gray-400 italic">Cohort 2025 API Fellow</div>
+            <div className="w-full h-px bg-gradient-to-r from-transparent via-orange-500/30 to-transparent my-2"></div>
+            <div className="text-xs text-gray-500">Keploy.io</div>
+          </div>
+        </div>
+        <button
+          onClick={handleDownload}
+          className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium px-6 py-3 rounded-lg transition flex items-center space-x-2 shadow-md hover:shadow-orange-300"
+        >
+          <span>Download ID Card</span>
+        </button>
+
           <canvas ref={canvasRef} width={350} height={500} style={{ display: 'none' }} />
         </div>
       )}

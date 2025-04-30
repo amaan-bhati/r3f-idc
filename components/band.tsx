@@ -1,3 +1,7 @@
+"use client";
+import React from "react";
+// import { WavyBackground } from "./ui/wavy-background";
+
 import * as THREE from "three";
 import { useEffect, useRef, useState } from "react";
 import { useFrame, ReactThreeFiber, extend } from "@react-three/fiber";
@@ -206,8 +210,6 @@ export default function BandBand({ userData }: BandProps) {
       
       // Draw the profile image inside the circle
       ctx.drawImage(profileTexture.image, 0, 0, 512, 512);
-      
-      // Reset clip for border
       ctx.restore();
       ctx.save();
       
@@ -229,8 +231,6 @@ export default function BandBand({ userData }: BandProps) {
   //  ctx.arc(256, 256, 230, -0.6, 0.8, false);
 
   //  ctx.stroke();
-
-   
 
    // Bottom-left arc segment
 
@@ -419,6 +419,7 @@ export default function BandBand({ userData }: BandProps) {
           </group>
         </RigidBody>
       </group>
+      
       <mesh ref={band}>
         <meshLineGeometry />
         <meshLineMaterial
