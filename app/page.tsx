@@ -11,7 +11,7 @@ import { MeshLineGeometry, MeshLineMaterial } from "meshline";
 import Band from "@/components/band";
 import Hero from "@/components/hero";
 import { useState } from "react";
-import { WavyBackground } from "@/components/ui/wavy-background";
+// import { WavyBackground } from "@/components/ui/wavy-background";
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 useGLTF.preload("/assets/3d/card.glb");
